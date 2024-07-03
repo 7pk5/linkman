@@ -5,9 +5,11 @@ from bs4 import BeautifulSoup
 from urllib.parse import urlparse
 import streamlit as st
 from io import BytesIO
+from git import Repo
 
 # File path for the local Excel file
 file_path = 'link_data.xlsx'
+repo_path = 'path_to_your_local_repo'
 
 # Function to check if the file exists
 def file_exists(file_path):
@@ -74,6 +76,14 @@ if st.button("Enter"):
             new_row = pd.DataFrame({'Links': [link], 'Description': [description]})
             df = pd.concat([df, new_row], ignore_index=True)
             save_excel(df, file_path)
+            
+            # Commit changes to GitHub
+            repo = Repo(repo_path)
+            repo.index.add([file_path])
+            repo.index.commit("Updated link_data.xlsx with new link")
+            origin = repo.remote(name='origin')
+            origin.push()
+
             st.success("Link and description have been added successfully.")
 
 st.markdown("---")
