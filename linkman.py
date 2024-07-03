@@ -6,24 +6,20 @@ from urllib.parse import urlparse
 import streamlit as st
 from io import BytesIO
 
-# File path for the local Excel file
-file_path = 'link_data.xlsx'
-
-# Function to check if the file exists
-def file_exists(file_path):
-    return os.path.isfile(file_path)
+# File URL for the Excel file on GitHub
+file_url = 'https://raw.githubusercontent.com/your_username/your_repository/main/link_data.xlsx'
 
 # Function to load the Excel file
-def load_excel(file_path):
-    if file_exists(file_path):
-        df = pd.read_excel(file_path)
-    else:
-        df = pd.DataFrame(columns=['Links', 'Description'])
+def load_excel(file_url):
+    response = requests.get(file_url)
+    with open('link_data.xlsx', 'wb') as f:
+        f.write(response.content)
+    df = pd.read_excel('link_data.xlsx')
     return df
 
 # Function to save the DataFrame to the Excel file
-def save_excel(df, file_path):
-    df.to_excel(file_path, index=False)
+def save_excel(df):
+    df.to_excel('link_data.xlsx', index=False)
 
 # Function to extract the base domain from a URL
 def get_base_domain(url):
@@ -53,6 +49,9 @@ def to_excel_bytes(df):
 # Streamlit app setup
 st.title("Link Management App")
 
+# Load the Excel data
+df = load_excel(file_url)
+
 # Main Page
 st.write("Link Management")
 st.markdown("---")
@@ -60,7 +59,6 @@ st.markdown("---")
 link = st.text_input("Enter the link:")
 
 if link:
-    df = load_excel(file_path)
     base_domain = get_base_domain(link)
     existing_domains = df['Links'].apply(get_base_domain)
     
@@ -70,19 +68,23 @@ if link:
         description = fetch_description(link)
         new_row = pd.DataFrame({'Links': [link], 'Description': [description]})
         df = pd.concat([df, new_row], ignore_index=True)
-        save_excel(df, file_path)
+        save_excel(df)
         st.success("Link and description have been added successfully.")
 
 st.markdown("---")
 
 st.write("### Current Links and Descriptions")
-df = load_excel(file_path)
 st.dataframe(df)
 
 st.markdown("---")
 
 # Download button for the updated spreadsheet
-excel_bytes = to_excel_bytes(df)
+def download_excel():
+    with open('link_data.xlsx', 'rb') as f:
+        excel_bytes = f.read()
+    return excel_bytes
+
+excel_bytes = download_excel()
 st.download_button(label="Download Excel", data=excel_bytes, file_name='links.xlsx', mime='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
 
 st.markdown("---")
@@ -90,4 +92,3 @@ st.markdown("---")
 # Logout button (optional, can be removed if not needed)
 #if st.button("Logout"):
 #    st.success("You have been logged out.")
-
