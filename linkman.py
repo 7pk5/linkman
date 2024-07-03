@@ -5,11 +5,9 @@ from bs4 import BeautifulSoup
 from urllib.parse import urlparse
 import streamlit as st
 from io import BytesIO
-from git import Repo
 
 # File path for the local Excel file
 file_path = 'link_data.xlsx'
-repo_path = 'https://github.com/7pk5/linkman'
 
 # Function to check if the file exists
 def file_exists(file_path):
@@ -59,36 +57,24 @@ st.title("Link Management App")
 st.write("Link Management")
 st.markdown("---")
 
-# Text input for link
 link = st.text_input("Enter the link:")
 
-# Button to submit link
-if st.button("Enter"):
-    if link:
-        df = load_excel(file_path)
-        base_domain = get_base_domain(link)
-        existing_domains = df['Links'].apply(get_base_domain)
-        
-        if base_domain in existing_domains.values:
-            st.warning("Link is from the same website as an existing one. Please check it and try again.")
-        else:
-            description = fetch_description(link)
-            new_row = pd.DataFrame({'Links': [link], 'Description': [description]})
-            df = pd.concat([df, new_row], ignore_index=True)
-            save_excel(df, file_path)
-            
-            # Commit changes to GitHub
-            repo = Repo(repo_path)
-            repo.index.add([file_path])
-            repo.index.commit("Updated link_data.xlsx with new link")
-            origin = repo.remote(name='origin')
-            origin.push()
-
-            st.success("Link and description have been added successfully.")
+if link:
+    df = load_excel(file_path)
+    base_domain = get_base_domain(link)
+    existing_domains = df['Links'].apply(get_base_domain)
+    
+    if base_domain in existing_domains.values:
+        st.warning("Link is from the same website as an existing one. Please check it and try again.")
+    else:
+        description = fetch_description(link)
+        new_row = pd.DataFrame({'Links': [link], 'Description': [description]})
+        df = pd.concat([df, new_row], ignore_index=True)
+        save_excel(df, file_path)
+        st.success("Link and description have been added successfully.")
 
 st.markdown("---")
 
-# Display current links and descriptions
 st.write("### Current Links and Descriptions")
 df = load_excel(file_path)
 st.dataframe(df)
@@ -104,3 +90,4 @@ st.markdown("---")
 # Logout button (optional, can be removed if not needed)
 #if st.button("Logout"):
 #    st.success("You have been logged out.")
+
