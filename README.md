@@ -18,7 +18,7 @@ The Link Management App is a Streamlit-based web application designed to help us
 
 1. **Clone the Repository:**
    ```bash
-   git clone https://github.com/your/repository.git
+   [git clone https://github.com/your/repository.git](https://github.com/7pk5/linkman.git)
    cd repository-folder
    ```
 
