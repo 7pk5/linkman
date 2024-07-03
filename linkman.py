@@ -9,7 +9,7 @@ from git import Repo
 
 # File path for the local Excel file
 file_path = 'link_data.xlsx'
-repo_path = 'https://github.com/7pk5/linkman/blob/main/link_data.xlsx'
+repo_path = 'https://github.com/7pk5/linkman/main/link_data.xlsx'
 
 # Function to check if the file exists
 def file_exists(file_path):
