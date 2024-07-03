@@ -53,7 +53,7 @@ st.title("Link Management App")
 df = load_excel(file_url)
 
 # Main Page
-st.write("Link Management")
+st.write("To Avoid Same Website on Ai Community")
 st.markdown("---")
 
 # Input for link with Enter button
