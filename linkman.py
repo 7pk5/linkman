@@ -7,7 +7,7 @@ import streamlit as st
 from io import BytesIO
 
 # File URL for the Excel file on GitHub
-file_url = 'https://raw.githubusercontent.com/7pk5/linkman/main/link_data.xlsx'
+file_url = 'link_data.xlsx'
 
 # Function to load the Excel file
 def load_excel(file_url):
