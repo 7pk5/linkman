@@ -56,17 +56,19 @@ df = load_excel(file_url)
 st.write("Link Management")
 st.markdown("---")
 
-link = st.text_input("Enter the link:")
+# Input for link with Enter button
+link_input = st.text_input("Enter the link:")
+enter_button = st.button("Enter")
 
-if link:
-    base_domain = get_base_domain(link)
+if enter_button and link_input:
+    base_domain = get_base_domain(link_input)
     existing_domains = df['Links'].apply(get_base_domain)
     
     if base_domain in existing_domains.values:
         st.warning("Link is from the same website as an existing one. Please check it and try again.")
     else:
-        description = fetch_description(link)
-        new_row = pd.DataFrame({'Links': [link], 'Description': [description]})
+        description = fetch_description(link_input)
+        new_row = pd.DataFrame({'Links': [link_input], 'Description': [description]})
         df = pd.concat([df, new_row], ignore_index=True)
         save_excel(df)
         st.success("Link and description have been added successfully.")
@@ -88,7 +90,3 @@ excel_bytes = download_excel()
 st.download_button(label="Download Excel", data=excel_bytes, file_name='links.xlsx', mime='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
 
 st.markdown("---")
-
-# Logout button (optional, can be removed if not needed)
-#if st.button("Logout"):
-#    st.success("You have been logged out.")
