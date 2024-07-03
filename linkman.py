@@ -54,7 +54,7 @@ def to_excel_bytes(df):
 st.title("Link Management App")
 
 # Main Page
-st.write("Link Management")
+st.write("To Avoid Same link in our Ai Community")
 st.markdown("---")
 
 link = st.text_input("Enter the link:")
